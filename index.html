@@ -15,14 +15,14 @@
 <body>
   <!-- Header -->
   <header class="app-header">
-    <h1>FinTrack</h1>
+    <h1>💰 FinTrack</h1>
   </header>
 
   <!-- Main Screens -->
   <main>
     <!-- Dashboard -->
     <section class="screen active" id="dashboard-screen">
-      <div class="card">
+      <div class="card glass">
         <h2>Dashboard</h2>
         <p class="subtitle">This week</p>
         <div class="stats">
@@ -46,7 +46,7 @@
 
     <!-- History -->
     <section class="screen" id="history-screen">
-      <div class="card">
+      <div class="card glass">
         <h2>History</h2>
         <div class="filters">
           <select id="filter-category">
@@ -66,7 +66,7 @@
 
     <!-- Add Expense -->
     <section class="screen" id="add-screen">
-      <div class="card">
+      <div class="card glass">
         <h2>Add Expense</h2>
         <form id="expense-form">
           <input type="number" id="amount" placeholder="Amount" required>
@@ -78,7 +78,7 @@
 
     <!-- Settings -->
     <section class="screen" id="settings-screen">
-      <div class="card">
+      <div class="card glass">
         <h2>Settings</h2>
 
         <label for="budget-input">Monthly Budget</label>
@@ -104,7 +104,7 @@
 
   <!-- Bottom Nav -->
   <nav class="app-footer">
-    <a href="#" data-screen="dashboard-screen">🏠</a>
+    <a href="#" data-screen="dashboard-screen" class="active">🏠</a>
     <a href="#" data-screen="history-screen">📊</a>
     <a href="#" data-screen="add-screen">➕</a>
     <a href="#" data-screen="settings-screen">⚙️</a>
