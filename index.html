@@ -9,7 +9,7 @@
 <body>
   <!-- Header -->
   <header class="app-header">
-    <h1 id="app-title">FinTrack</h1>
+    <h1>FinTrack</h1>
   </header>
 
   <!-- Screens -->
@@ -32,45 +32,39 @@
         <div class="circle-progress">
           <div class="circle-inner">
             <strong id="progress-spent">$0</strong>
-            <p>of <span id="budget-limit"></span></p>
+            <p>of <span id="budget-limit">Set budget</span></p>
           </div>
         </div>
       </div>
     </section>
-<!-- History -->
-<section class="screen" id="history-screen">
-  <div class="card">
-    <h2>History</h2>
 
-    <!-- Filters -->
-    <div class="filters">
-      <select id="filter-category">
-        <option value="all">All Categories</option>
-      </select>
-      <select id="filter-time">
-        <option value="all">All Time</option>
-        <option value="week">This Week</option>
-        <option value="month">This Month</option>
-      </select>
-    </div>
+    <!-- History -->
+    <section class="screen" id="history-screen">
+      <div class="card">
+        <h2>History</h2>
+        <div class="filters">
+          <select id="filter-category">
+            <option value="all">All Categories</option>
+          </select>
+          <select id="filter-time">
+            <option value="all">All Time</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+          </select>
+        </div>
+        <ul class="history-list" id="history-list">
+          <li>No expenses yet</li>
+        </ul>
+      </div>
+    </section>
 
-    <ul class="history-list" id="history-list">
-      <li>No expenses yet</li>
-    </ul>
-  </div>
-</section>
     <!-- Add Expense -->
     <section class="screen" id="add-screen">
       <div class="card">
         <h2>Add Expense</h2>
         <form id="expense-form">
           <input type="number" id="amount" placeholder="Amount" required>
-          <select id="category">
-            <option>🍔 Food</option>
-            <option>✈️ Travel</option>
-            <option>🛍️ Shopping</option>
-            <option>📌 Other</option>
-          </select>
+          <select id="category"></select>
           <button type="submit">Add</button>
         </form>
       </div>
@@ -87,6 +81,15 @@
         <label for="currency-input">Currency Symbol</label>
         <input type="text" id="currency-input" maxlength="3" placeholder="$">
 
+        <h3 style="margin-top:1.5rem;">Categories</h3>
+        <ul id="categories-list" class="categories-list"></ul>
+
+        <form id="add-category-form">
+          <input type="text" id="category-emoji" maxlength="2" placeholder="Emoji (🍔)" required>
+          <input type="text" id="category-name" placeholder="Name (Food)" required>
+          <button type="submit">Add Category</button>
+        </form>
+
         <button id="save-settings">Save Settings</button>
         <button id="reset-data" class="danger">Reset All Data</button>
       </div>
@@ -101,7 +104,6 @@
     <a href="#" data-screen="settings-screen">⚙️</a>
   </nav>
 
-  <!-- JavaScript -->
   <script src="script.js"></script>
 </body>
 </html>
