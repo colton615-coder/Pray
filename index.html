@@ -59,18 +59,22 @@
           </select>
         </div>
         <ul class="history-list" id="history-list">
-          <li>No expenses yet</li>
+          <li>No transactions yet</li>
         </ul>
       </div>
     </section>
 
-    <!-- Add Expense -->
+    <!-- Add Transaction -->
     <section class="screen" id="add-screen">
       <div class="card glass">
-        <h2>Add Expense</h2>
+        <h2>Add Transaction</h2>
         <form id="expense-form">
           <input type="number" id="amount" placeholder="Amount" required>
           <select id="category"></select>
+          <select id="type">
+            <option value="expense">Expense</option>
+            <option value="income">Income</option>
+          </select>
           <button type="submit">Add</button>
         </form>
       </div>
