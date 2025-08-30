@@ -6,6 +6,9 @@ body {
   padding-bottom: 70px;
   color: #111;
 }
+main {
+  padding-top: 1rem;
+}
 
 /* Header */
 .app-header {
@@ -20,16 +23,20 @@ body {
   z-index: 10;
 }
 
-/* Card Sections */
+/* Screens */
+.screen {
+  display: none;
+}
+.screen.active {
+  display: block;
+}
+
+/* Cards */
 .card {
   background: #fff;
   border-radius: 20px;
   padding: 1.5rem;
   margin: 1rem;
-}
-.card h2 {
-  margin: 0 0 0.5rem;
-  font-size: 1.1rem;
 }
 .subtitle {
   color: #888;
@@ -37,7 +44,7 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Stats (Dashboard) */
+/* Stats */
 .stats {
   display: flex;
   justify-content: space-between;
@@ -46,11 +53,6 @@ body {
   display: block;
   font-size: 1.3rem;
   color: #007aff;
-}
-.stats p {
-  margin: 0;
-  font-size: 0.85rem;
-  color: #666;
 }
 
 /* History */
@@ -64,20 +66,16 @@ body {
   justify-content: space-between;
   padding: 0.75rem 0;
   border-bottom: 1px solid #f0f0f0;
-  font-size: 0.95rem;
 }
 .history-list li:last-child {
   border: none;
 }
-.income {
-  color: #34c759; /* iOS green */
-}
 
-/* Circle Progress (Budget) */
+/* Circle Progress */
 .circle-progress {
   width: 120px;
   height: 120px;
-  margin: 0 auto;
+  margin: 1.5rem auto;
   border-radius: 50%;
   background: conic-gradient(#007aff 0deg, #eee 0deg);
   display: flex;
@@ -112,7 +110,7 @@ form input, form select {
   border: 1px solid #ddd;
   font-size: 1rem;
 }
-form button {
+form button, #save-settings, #reset-data {
   width: 100%;
   padding: 0.75rem;
   border-radius: 12px;
@@ -121,6 +119,10 @@ form button {
   color: white;
   font-size: 1rem;
   font-weight: 600;
+  margin-top: 0.5rem;
+}
+button.danger {
+  background: #ff3b30; /* iOS red */
 }
 
 /* Footer Nav */
@@ -137,6 +139,6 @@ form button {
 }
 .app-footer a {
   font-size: 1.4rem;
-  color: #333;
   text-decoration: none;
+  color: #333;
 }
