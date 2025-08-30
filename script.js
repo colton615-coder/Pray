@@ -176,6 +176,110 @@ expenseForm.addEventListener("submit", (e) => {
   renderExpenses();
 });
 
-function getFilteredExpenses() {
+function getFilteredExpenses() {i
   let filtered = [...expenses];
   if (filterCategory
+function getFilteredExpenses() {
+  let filtered = [...expenses];
+  if (filterCategory.value !== "all") {
+    filtered = filtered.filter(exp => exp.category === filterCategory.value);
+  }
+  const now = new Date();
+  if (filterTime.value === "week") {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(now.getDate() - 7);
+    filtered = filtered.filter(exp => new Date(exp.date) >= oneWeekAgo);
+  }
+  if (filterTime.value === "month") {
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(now.getMonth() - 1);
+    filtered = filtered.filter(exp => new Date(exp.date) >= oneMonthAgo);
+  }
+  return filtered;
+}
+
+function renderExpenses() {
+  historyList.innerHTML = "";
+  const filteredExpenses = getFilteredExpenses();
+  if (filteredExpenses.length === 0) {
+    historyList.innerHTML = "<li>No transactions yet</li>";
+    updateDashboard(0, 0);
+    return;
+  }
+  let expenseTotal = 0;
+  let incomeTotal = 0;
+
+  filteredExpenses.slice().reverse().forEach(exp => {
+    if (exp.type === "expense") expenseTotal += exp.amount;
+    if (exp.type === "income") incomeTotal += exp.amount;
+
+    const label = exp.subcategory 
+      ? `${exp.category} → ${exp.subcategory}` 
+      : exp.category;
+
+    const sign = exp.type === "income" ? "+" : "-";
+    const cssClass = exp.type === "income" ? "income" : "expense";
+
+    const li = document.createElement("li");
+    li.innerHTML = `<span>${label}</span>
+      <span class="${cssClass}">${sign} ${currencySymbol}${exp.amount.toFixed(2)}</span>`;
+    historyList.appendChild(li);
+  });
+
+  updateDashboard(expenseTotal, incomeTotal);
+}
+
+// ===== DASHBOARD =====
+function updateDashboard(expenseTotal, incomeTotal) {
+  const remaining = budgetLimit > 0 ? budgetLimit - expenseTotal : 0;
+  spentEl.textContent = `${currencySymbol}${expenseTotal.toFixed(2)}`;
+  remainingEl.textContent = budgetLimit > 0 
+    ? `${currencySymbol}${remaining.toFixed(2)}` 
+    : `${currencySymbol}0.00`;
+  progressSpentEl.textContent = `${currencySymbol}${expenseTotal.toFixed(0)}`;
+  budgetLimitEl.textContent = budgetLimit > 0 
+    ? `${currencySymbol}${budgetLimit}` 
+    : "Set budget";
+
+  const percent = budgetLimit > 0 
+    ? Math.min((expenseTotal / budgetLimit) * 360, 360) 
+    : 0;
+  circle.style.background = `conic-gradient(#007aff ${percent}deg, rgba(255,255,255,0.2) ${percent}deg)`;
+}
+
+// ===== SETTINGS =====
+saveSettingsBtn.addEventListener("click", () => {
+  const newBudget = parseFloat(budgetInput.value);
+  const newCurrency = currencyInput.value || currencySymbol;
+  if (!isNaN(newBudget) && newBudget > 0) {
+    budgetLimit = newBudget;
+    localStorage.setItem(BUDGET_KEY, budgetLimit);
+  }
+  currencySymbol = newCurrency;
+  localStorage.setItem(CURRENCY_KEY, currencySymbol);
+  renderExpenses();
+  alert("Settings saved!");
+});
+
+resetDataBtn.addEventListener("click", () => {
+  if (confirm("Reset all data?")) {
+    expenses = [];
+    categories = [
+      { name: "🍔 Food", subcategories: [] },
+      { name: "✈️ Travel", subcategories: [] },
+      { name: "🛍️ Shopping", subcategories: [] },
+      { name: "💳 Subscriptions", subcategories: [] }
+    ];
+    localStorage.clear();
+    budgetLimit = 0;
+    currencySymbol = "$";
+    renderCategories();
+    renderExpenses();
+  }
+});
+
+// ===== INIT =====
+renderCategories();
+renderExpenses();
+budgetInput.value = budgetLimit || "";
+currencyInput.value = currencySymbol;
