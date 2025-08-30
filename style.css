@@ -1,197 +1,80 @@
-/* Background gradient */
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
-  margin: 0;
-  padding-bottom: 80px;
-  color: #111;
-  min-height: 100vh;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FinTrack Clean</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>💰 FinTrack</h1>
+  </header>
 
-/* Header */
-.app-header {
-  text-align: center;
-  padding: 1rem;
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: white;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
+  <main>
+    <!-- Dashboard -->
+    <section class="screen active" id="dashboard-screen">
+      <h2>Dashboard</h2>
+      <p>Spent: <span id="spent">$0.00</span></p>
+      <p>Remaining: <span id="remaining">$0.00</span></p>
+      <p>Budget: <span id="budget-limit">Not set</span></p>
+    </section>
 
-/* Screens */
-.screen { display: none; animation: fadeIn 0.3s ease; }
-.screen.active { display: block; }
+    <!-- History -->
+    <section class="screen" id="history-screen">
+      <h2>History</h2>
+      <ul id="history-list">
+        <li>No transactions yet</li>
+      </ul>
+    </section>
 
-/* Glass effect cards */
-.card.glass {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 1.5rem;
-  margin: 1rem;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-}
+    <!-- Add Transaction -->
+    <section class="screen" id="add-screen">
+      <h2>Add Transaction</h2>
+      <form id="expense-form">
+        <input type="number" id="amount" placeholder="Amount" required>
+        <select id="category"></select>
+        <select id="subcategory" style="display:none;"></select>
+        <select id="type">
+          <option value="expense">Expense</option>
+          <option value="income">Income</option>
+        </select>
+        <button type="submit">Add</button>
+      </form>
+    </section>
 
-/* Subtitles */
-.subtitle { color: #eee; font-size: 0.9rem; margin-bottom: 1rem; }
+    <!-- Settings -->
+    <section class="screen" id="settings-screen">
+      <h2>Settings</h2>
 
-/* Stats */
-.stats { display: flex; justify-content: space-between; color: #fff; }
-.stats strong { font-size: 1.4rem; }
+      <label>Budget</label>
+      <input type="number" id="budget-input" placeholder="Enter budget">
 
-/* Circle Progress */
-.circle-progress {
-  width: 140px;
-  height: 140px;
-  margin: 1.5rem auto;
-  border-radius: 50%;
-  background: conic-gradient(#007aff 0deg, rgba(255,255,255,0.2) 0deg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.6s ease;
-}
-.circle-inner {
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 50%;
-  width: 100px;
-  height: 100px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.circle-inner strong { font-size: 1.2rem; color: #007aff; }
-.circle-inner p { margin: 0; font-size: 0.8rem; color: #333; }
+      <label>Currency Symbol</label>
+      <input type="text" id="currency-input" maxlength="3" placeholder="$">
 
-/* History */
-.history-list { list-style: none; padding: 0; margin: 0; }
-.history-list li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0.5rem 0;
-  padding: 0.75rem 1rem;
-  background: rgba(255,255,255,0.7);
-  border-radius: 12px;
-  font-size: 0.95rem;
-}
-.history-list li span.expense { color: #ff3b30; font-weight: 600; }
-.history-list li span.income { color: #34c759; font-weight: 600; }
+      <h3>Categories</h3>
+      <ul id="categories-list"></ul>
 
-/* Filters */
-.filters { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-.filters select {
-  flex: 1;
-  padding: 0.6rem;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  font-size: 0.9rem;
-}
+      <form id="add-category-form">
+        <input type="text" id="category-emoji" maxlength="2" placeholder="Emoji (🍔)" required>
+        <input type="text" id="category-name" placeholder="Name (Food)" required>
+        <button type="submit">Add Category</button>
+      </form>
 
-/* Forms */
-form input, form select {
-  width: 100%;
-  margin-bottom: 1rem;
-  padding: 0.8rem;
-  border-radius: 12px;
-  border: 1px solid #ddd;
-  font-size: 1rem;
-}
-form button, #save-settings, #reset-data {
-  width: 100%;
-  padding: 0.8rem;
-  border-radius: 12px;
-  background: #007aff;
-  border: none;
-  color: white;
-  font-size: 1rem;
-  font-weight: 600;
-  margin-top: 0.5rem;
-  cursor: pointer;
-}
-form button:hover, #save-settings:hover { background: #005bb5; }
-button.danger { background: #ff3b30; }
+      <button id="save-settings">Save Settings</button>
+      <button id="reset-data">Reset All</button>
+    </section>
+  </main>
 
-/* Categories + Subcategories */
-.categories-list { list-style: none; padding: 0; margin: 0 0 1rem 0; }
-.categories-list li { margin-bottom: 1rem; }
-.subcategory-list {
-  list-style: none;
-  padding-left: 1rem;
-  margin: 0.5rem 0 1rem;
-  border-left: 2px solid rgba(0,0,0,0.1);
-}
-.subcategory-list li {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.3rem 0;
-}
-.subcategory-list button {
-  background: #ff3b30;
-  border: none;
-  color: white;
-  font-size: 0.7rem;
-  padding: 0.2rem 0.5rem;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.add-subcategory-form {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-.add-subcategory-form input {
-  flex: 1;
-  padding: 0.4rem;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 0.8rem;
-}
-.add-subcategory-form button {
-  background: #007aff;
-  border: none;
-  color: white;
-  font-size: 0.8rem;
-  padding: 0.4rem 0.8rem;
-  border-radius: 8px;
-  cursor: pointer;
-}
+  <!-- Nav -->
+  <nav>
+    <button data-screen="dashboard-screen">Dashboard</button>
+    <button data-screen="history-screen">History</button>
+    <button data-screen="add-screen">Add</button>
+    <button data-screen="settings-screen">Settings</button>
+  </nav>
 
-/* Bottom Nav */
-.app-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(255,255,255,0.3);
-  backdrop-filter: blur(10px);
-  display: flex;
-  justify-content: space-around;
-  padding: 0.7rem 0;
-}
-.app-footer a {
-  font-size: 1.6rem;
-  text-decoration: none;
-  color: #444;
-  position: relative;
-  transition: color 0.2s ease;
-}
-.app-footer a.active { color: #007aff; }
-.app-footer a.active::after {
-  content: "•";
-  position: absolute;
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1.2rem;
-  color: #007aff;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+  <script src="script.js"></script>
+</body>
+</html>
