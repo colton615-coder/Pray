@@ -5,7 +5,7 @@ const EXPENSES_KEY = "expenses";
 const CATEGORIES_KEY = "categories";
 
 // ===== DATA =====
-let budgetLimit = parseFloat(localStorage.getItem(BUDGET_KEY)) || 1400;
+let budgetLimit = parseFloat(localStorage.getItem(BUDGET_KEY)) || 0;
 let currencySymbol = localStorage.getItem(CURRENCY_KEY) || "$";
 let expenses = JSON.parse(localStorage.getItem(EXPENSES_KEY)) || [];
 let categories = JSON.parse(localStorage.getItem(CATEGORIES_KEY)) || [
