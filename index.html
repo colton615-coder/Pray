@@ -9,66 +9,85 @@
 <body>
   <!-- Header -->
   <header class="app-header">
-    <h1>FinTrack</h1>
+    <h1 id="app-title">FinTrack</h1>
   </header>
 
-  <!-- Dashboard -->
-  <section class="card">
-    <h2>Dashboard</h2>
-    <p class="subtitle">This week</p>
-    <div class="stats">
-      <div>
-        <strong id="spent">$0.00</strong>
-        <p>Spent</p>
+  <!-- Screens -->
+  <main>
+    <!-- Dashboard -->
+    <section class="screen active" id="dashboard-screen">
+      <div class="card">
+        <h2>Dashboard</h2>
+        <p class="subtitle">This week</p>
+        <div class="stats">
+          <div>
+            <strong id="spent">$0.00</strong>
+            <p>Spent</p>
+          </div>
+          <div>
+            <strong id="remaining">$0.00</strong>
+            <p>Remaining</p>
+          </div>
+        </div>
+        <div class="circle-progress">
+          <div class="circle-inner">
+            <strong id="progress-spent">$0</strong>
+            <p>of <span id="budget-limit">$1400</span></p>
+          </div>
+        </div>
       </div>
-      <div>
-        <strong id="remaining">$0.00</strong>
-        <p>Remaining</p>
+    </section>
+
+    <!-- History -->
+    <section class="screen" id="history-screen">
+      <div class="card">
+        <h2>History</h2>
+        <ul class="history-list" id="history-list">
+          <li>No expenses yet</li>
+        </ul>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- History -->
-  <section class="card">
-    <h2>History</h2>
-    <ul class="history-list" id="history-list">
-      <li>No expenses yet</li>
-    </ul>
-  </section>
-
-  <!-- Budget Goal -->
-  <section class="card">
-    <h2>Budget Goal</h2>
-    <p class="subtitle">Monthly limit</p>
-    <div class="circle-progress">
-      <div class="circle-inner">
-        <strong id="progress-spent">$0</strong>
-        <p>of $1400</p>
+    <!-- Add Expense -->
+    <section class="screen" id="add-screen">
+      <div class="card">
+        <h2>Add Expense</h2>
+        <form id="expense-form">
+          <input type="number" id="amount" placeholder="Amount" required>
+          <select id="category">
+            <option>🍔 Food</option>
+            <option>✈️ Travel</option>
+            <option>🛍️ Shopping</option>
+            <option>📌 Other</option>
+          </select>
+          <button type="submit">Add</button>
+        </form>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Add Expense -->
-  <section class="card">
-    <h2>Add Expense</h2>
-    <form id="expense-form">
-      <input type="number" id="amount" placeholder="Amount ($)" required>
-      <select id="category">
-        <option>🍔 Food</option>
-        <option>✈️ Travel</option>
-        <option>🛍️ Shopping</option>
-        <option>📌 Other</option>
-      </select>
-      <button type="submit">Add</button>
-    </form>
-  </section>
+    <!-- Settings -->
+    <section class="screen" id="settings-screen">
+      <div class="card">
+        <h2>Settings</h2>
+
+        <label for="budget-input">Monthly Budget</label>
+        <input type="number" id="budget-input" placeholder="Enter budget">
+
+        <label for="currency-input">Currency Symbol</label>
+        <input type="text" id="currency-input" maxlength="3" placeholder="$">
+
+        <button id="save-settings">Save Settings</button>
+        <button id="reset-data" class="danger">Reset All Data</button>
+      </div>
+    </section>
+  </main>
 
   <!-- Bottom Nav -->
   <nav class="app-footer">
-    <a href="#">🏠</a>
-    <a href="#">📊</a>
-    <a href="#">➕</a>
-    <a href="#">⚙️</a>
+    <a href="#" data-screen="dashboard-screen">🏠</a>
+    <a href="#" data-screen="history-screen">📊</a>
+    <a href="#" data-screen="add-screen">➕</a>
+    <a href="#" data-screen="settings-screen">⚙️</a>
   </nav>
 
   <!-- JavaScript -->
