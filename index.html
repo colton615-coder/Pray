@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Finance Tracker</title>
+  <title>FinTrack</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#007aff">
+
+  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,7 +18,7 @@
     <h1>FinTrack</h1>
   </header>
 
-  <!-- Screens -->
+  <!-- Main Screens -->
   <main>
     <!-- Dashboard -->
     <section class="screen active" id="dashboard-screen">
@@ -104,6 +110,16 @@
     <a href="#" data-screen="settings-screen">⚙️</a>
   </nav>
 
+  <!-- App Logic -->
   <script src="script.js"></script>
+
+  <!-- Service Worker -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/service-worker.js")
+        .then(() => console.log("✅ Service Worker registered"))
+        .catch(err => console.error("❌ SW registration failed:", err));
+    }
+  </script>
 </body>
 </html>
