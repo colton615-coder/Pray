@@ -37,17 +37,28 @@
         </div>
       </div>
     </section>
+<!-- History -->
+<section class="screen" id="history-screen">
+  <div class="card">
+    <h2>History</h2>
 
-    <!-- History -->
-    <section class="screen" id="history-screen">
-      <div class="card">
-        <h2>History</h2>
-        <ul class="history-list" id="history-list">
-          <li>No expenses yet</li>
-        </ul>
-      </div>
-    </section>
+    <!-- Filters -->
+    <div class="filters">
+      <select id="filter-category">
+        <option value="all">All Categories</option>
+      </select>
+      <select id="filter-time">
+        <option value="all">All Time</option>
+        <option value="week">This Week</option>
+        <option value="month">This Month</option>
+      </select>
+    </div>
 
+    <ul class="history-list" id="history-list">
+      <li>No expenses yet</li>
+    </ul>
+  </div>
+</section>
     <!-- Add Expense -->
     <section class="screen" id="add-screen">
       <div class="card">
