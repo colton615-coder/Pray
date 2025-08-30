@@ -138,19 +138,22 @@ filterTime.addEventListener("change", renderExpenses);
 // ===== EXPENSES =====
 expenseForm.addEventListener("submit", (e) => {
   e.preventDefault();
+
   const amount = parseFloat(amountInput.value);
   const category = categorySelect.value;
+
   if (isNaN(amount) || amount <= 0) return;
 
-  const expense = { 
-    id: Date.now(), 
-    amount, 
-    category, 
-    date: new Date().toISOString() 
+  const expense = {
+    id: Date.now(),
+    amount,
+    category,
+    date: new Date().toISOString()
   };
 
   expenses.push(expense);
   localStorage.setItem(EXPENSES_KEY, JSON.stringify(expenses));
+
   amountInput.value = "";
   renderExpenses();
 });
@@ -179,13 +182,22 @@ function renderExpenses() {
 
 // ===== DASHBOARD =====
 function updateDashboard(totalSpent) {
-  const remaining = budgetLimit - totalSpent;
-  spentEl.textContent = `${currencySymbol}${totalSpent.toFixed(2)}`;
-  remainingEl.textContent = `${currencySymbol}${remaining.toFixed(2)}`;
-  progressSpentEl.textContent = `${currencySymbol}${totalSpent}`;
-  budgetLimitEl.textContent = `${currencySymbol}${budgetLimit}`;
+  const remaining = budgetLimit > 0 ? budgetLimit - totalSpent : 0;
 
-  const percent = Math.min((totalSpent / budgetLimit) * 360, 360);
+  spentEl.textContent = `${currencySymbol}${totalSpent.toFixed(2)}`;
+  remainingEl.textContent = budgetLimit > 0
+    ? `${currencySymbol}${remaining.toFixed(2)}`
+    : `${currencySymbol}0.00`;
+
+  progressSpentEl.textContent = `${currencySymbol}${totalSpent.toFixed(0)}`;
+  budgetLimitEl.textContent = budgetLimit > 0
+    ? `${currencySymbol}${budgetLimit}`
+    : "Set budget";
+
+  const percent = budgetLimit > 0
+    ? Math.min((totalSpent / budgetLimit) * 360, 360)
+    : 0;
+
   circle.style.background = `conic-gradient(#007aff ${percent}deg, #eee ${percent}deg)`;
 }
 
@@ -210,7 +222,7 @@ resetDataBtn.addEventListener("click", () => {
     expenses = [];
     categories = ["🍔 Food","✈️ Travel","🛍️ Shopping","📌 Other"];
     localStorage.clear();
-    budgetLimit = 1400;
+    budgetLimit = 0;
     currencySymbol = "$";
     renderCategories();
     renderExpenses();
@@ -220,3 +232,7 @@ resetDataBtn.addEventListener("click", () => {
 // ===== INIT =====
 renderCategories();
 renderExpenses();
+
+// Prefill settings inputs
+budgetInput.value = budgetLimit || "";
+currencyInput.value = currencySymbol;
