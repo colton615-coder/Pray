@@ -24,6 +24,7 @@ const filterTime = document.getElementById("filter-time");
 const expenseForm = document.getElementById("expense-form");
 const amountInput = document.getElementById("amount");
 const categorySelect = document.getElementById("category");
+const typeSelect = document.getElementById("type");
 const budgetInput = document.getElementById("budget-input");
 const currencyInput = document.getElementById("currency-input");
 const saveSettingsBtn = document.getElementById("save-settings");
@@ -42,6 +43,10 @@ navLinks.forEach(link => {
     const screenId = link.dataset.screen;
     screens.forEach(s => s.classList.remove("active"));
     document.getElementById(screenId).classList.add("active");
+
+    // highlight active nav
+    navLinks.forEach(n => n.classList.remove("active"));
+    link.classList.add("active");
   });
 });
 
@@ -92,16 +97,25 @@ function deleteCategory(index) {
   renderCategories();
 }
 
-// ===== EXPENSES =====
+// ===== EXPENSES / INCOME =====
 expenseForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const amount = parseFloat(amountInput.value);
   const category = categorySelect.value;
+  const type = typeSelect.value;
   if (isNaN(amount) || amount <= 0) return;
 
-  const expense = { id: Date.now(), amount, category, date: new Date().toISOString() };
+  const expense = { 
+    id: Date.now(), 
+    amount, 
+    category, 
+    type, // "expense" or "income"
+    date: new Date().toISOString() 
+  };
+
   expenses.push(expense);
   localStorage.setItem(EXPENSES_KEY, JSON.stringify(expenses));
+
   amountInput.value = "";
   renderExpenses();
 });
@@ -129,30 +143,39 @@ function renderExpenses() {
   historyList.innerHTML = "";
   const filteredExpenses = getFilteredExpenses();
   if (filteredExpenses.length === 0) {
-    historyList.innerHTML = "<li>No expenses yet</li>";
-    updateDashboard(0);
+    historyList.innerHTML = "<li>No transactions yet</li>";
+    updateDashboard(0, 0);
     return;
   }
-  let total = 0;
+  let expenseTotal = 0;
+  let incomeTotal = 0;
+
   filteredExpenses.slice().reverse().forEach(exp => {
-    total += exp.amount;
+    if (exp.type === "expense") expenseTotal += exp.amount;
+    if (exp.type === "income") incomeTotal += exp.amount;
+
     const li = document.createElement("li");
+    const sign = exp.type === "income" ? "+" : "-";
+    const cssClass = exp.type === "income" ? "income" : "expense";
+
     li.innerHTML = `<span>${exp.category}</span>
-      <span>- ${currencySymbol}${exp.amount.toFixed(2)}</span>`;
+      <span class="${cssClass}">${sign} ${currencySymbol}${exp.amount.toFixed(2)}</span>`;
     historyList.appendChild(li);
   });
-  updateDashboard(total);
+
+  updateDashboard(expenseTotal, incomeTotal);
 }
 
 // ===== DASHBOARD =====
-function updateDashboard(totalSpent) {
-  const remaining = budgetLimit > 0 ? budgetLimit - totalSpent : 0;
-  spentEl.textContent = `${currencySymbol}${totalSpent.toFixed(2)}`;
+function updateDashboard(expenseTotal, incomeTotal) {
+  const remaining = budgetLimit > 0 ? budgetLimit - expenseTotal : 0;
+  spentEl.textContent = `${currencySymbol}${expenseTotal.toFixed(2)}`;
   remainingEl.textContent = budgetLimit > 0 ? `${currencySymbol}${remaining.toFixed(2)}` : `${currencySymbol}0.00`;
-  progressSpentEl.textContent = `${currencySymbol}${totalSpent.toFixed(0)}`;
+  progressSpentEl.textContent = `${currencySymbol}${expenseTotal.toFixed(0)}`;
   budgetLimitEl.textContent = budgetLimit > 0 ? `${currencySymbol}${budgetLimit}` : "Set budget";
-  const percent = budgetLimit > 0 ? Math.min((totalSpent / budgetLimit) * 360, 360) : 0;
-  circle.style.background = `conic-gradient(#007aff ${percent}deg, #eee ${percent}deg)`;
+
+  const percent = budgetLimit > 0 ? Math.min((expenseTotal / budgetLimit) * 360, 360) : 0;
+  circle.style.background = `conic-gradient(#007aff ${percent}deg, rgba(255,255,255,0.2) ${percent}deg)`;
 }
 
 // ===== SETTINGS =====
