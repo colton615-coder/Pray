@@ -1,29 +1,142 @@
-/* Extra styling to enhance PicoCSS layout */
-
+/* General */
 body {
-  background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
-  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f2f3f7;
+  margin: 0;
+  padding-bottom: 70px;
+  color: #111;
+}
+
+/* Header */
+.app-header {
+  text-align: center;
+  padding: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  background: #fff;
+  border-bottom: 1px solid #e5e5e5;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Card Sections */
+.card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 1.5rem;
+  margin: 1rem;
+}
+.card h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+.subtitle {
+  color: #888;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+/* Stats (Dashboard) */
+.stats {
+  display: flex;
+  justify-content: space-between;
+}
+.stats strong {
+  display: block;
+  font-size: 1.3rem;
+  color: #007aff;
+}
+.stats p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* History */
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.history-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.95rem;
+}
+.history-list li:last-child {
+  border: none;
+}
+.income {
+  color: #34c759; /* iOS green */
+}
+
+/* Circle Progress (Budget) */
+.circle-progress {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: conic-gradient(#007aff 0deg, #eee 0deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.circle-inner {
+  background: #fff;
+  border-radius: 50%;
+  width: 90px;
+  height: 90px;
+  text-align: center;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+}
+.circle-inner strong {
+  font-size: 1.2rem;
+}
+.circle-inner p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #888;
 }
 
-main.container {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
+/* Form */
+form input, form select {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+}
+form button {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 12px;
+  background: #007aff;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
-figure img {
-  max-width: 100%;
-  border-radius: 8px;
-}
-
-nav {
+/* Footer Nav */
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background: #fff;
-  border-bottom: 1px solid #ddd;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.6rem 0;
 }
-
-footer {
-  text-align: center;
-  margin-top: auto;
-  padding: 2rem 0;
+.app-footer a {
+  font-size: 1.4rem;
+  color: #333;
+  text-decoration: none;
 }
