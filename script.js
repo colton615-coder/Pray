@@ -9,7 +9,10 @@ let budgetLimit = parseFloat(localStorage.getItem(BUDGET_KEY)) || 0;
 let currencySymbol = localStorage.getItem(CURRENCY_KEY) || "$";
 let expenses = JSON.parse(localStorage.getItem(EXPENSES_KEY)) || [];
 let categories = JSON.parse(localStorage.getItem(CATEGORIES_KEY)) || [
-  "🍔 Food", "✈️ Travel", "🛍️ Shopping", "📌 Other"
+  { name: "🍔 Food", subcategories: [] },
+  { name: "✈️ Travel", subcategories: [] },
+  { name: "🛍️ Shopping", subcategories: [] },
+  { name: "💳 Subscriptions", subcategories: [] }
 ];
 
 // ===== ELEMENTS =====
@@ -44,7 +47,6 @@ navLinks.forEach(link => {
     screens.forEach(s => s.classList.remove("active"));
     document.getElementById(screenId).classList.add("active");
 
-    // highlight active nav
     navLinks.forEach(n => n.classList.remove("active"));
     link.classList.add("active");
   });
@@ -56,7 +58,7 @@ function renderCategories() {
   categorySelect.innerHTML = "";
   categories.forEach(cat => {
     const option = document.createElement("option");
-    option.textContent = cat;
+    option.textContent = cat.name;
     categorySelect.appendChild(option);
   });
 
@@ -64,8 +66,8 @@ function renderCategories() {
   filterCategory.innerHTML = `<option value="all">All Categories</option>`;
   categories.forEach(cat => {
     const option = document.createElement("option");
-    option.value = cat;
-    option.textContent = cat;
+    option.value = cat.name;
+    option.textContent = cat.name;
     filterCategory.appendChild(option);
   });
 
@@ -73,8 +75,24 @@ function renderCategories() {
   categoriesList.innerHTML = "";
   categories.forEach((cat, index) => {
     const li = document.createElement("li");
-    li.innerHTML = `<span>${cat}</span>
-      <button onclick="deleteCategory(${index})">Delete</button>`;
+    li.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span>${cat.name}</span>
+        <button onclick="deleteCategory(${index})">Delete</button>
+      </div>
+      <ul class="subcategory-list" id="sub-list-${index}">
+        ${cat.subcategories.map((sub, subIndex) => `
+          <li>
+            <span>${sub}</span>
+            <button onclick="deleteSubcategory(${index}, ${subIndex})">X</button>
+          </li>
+        `).join("")}
+      </ul>
+      <form class="add-subcategory-form" onsubmit="addSubcategory(event, ${index})">
+        <input type="text" placeholder="Add subcategory..." required>
+        <button type="submit">+</button>
+      </form>
+    `;
     categoriesList.appendChild(li);
   });
 
@@ -86,7 +104,7 @@ addCategoryForm.addEventListener("submit", (e) => {
   const emoji = categoryEmojiInput.value.trim();
   const name = categoryNameInput.value.trim();
   if (!emoji || !name) return;
-  categories.push(`${emoji} ${name}`);
+  categories.push({ name: `${emoji} ${name}`, subcategories: [] });
   categoryEmojiInput.value = "";
   categoryNameInput.value = "";
   renderCategories();
@@ -97,25 +115,47 @@ function deleteCategory(index) {
   renderCategories();
 }
 
-// ===== EXPENSES / INCOME =====
+function addSubcategory(event, catIndex) {
+  event.preventDefault();
+  const input = event.target.querySelector("input");
+  const subName = input.value.trim();
+  if (!subName) return;
+  categories[catIndex].subcategories.push(subName);
+  localStorage.setItem(CATEGORIES_KEY, JSON.stringify(categories));
+  renderCategories();
+}
+
+function deleteSubcategory(catIndex, subIndex) {
+  categories[catIndex].subcategories.splice(subIndex, 1);
+  localStorage.setItem(CATEGORIES_KEY, JSON.stringify(categories));
+  renderCategories();
+}
+
+// ===== EXPENSES =====
 expenseForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const amount = parseFloat(amountInput.value);
-  const category = categorySelect.value;
+  const categoryName = categorySelect.value;
   const type = typeSelect.value;
   if (isNaN(amount) || amount <= 0) return;
+
+  const categoryObj = categories.find(c => c.name === categoryName);
+  let subcategory = "";
+  if (categoryObj && categoryObj.subcategories.length > 0) {
+    subcategory = prompt(`Pick subcategory of ${categoryName}: \n${categoryObj.subcategories.join(", ")}`) || "";
+  }
 
   const expense = { 
     id: Date.now(), 
     amount, 
-    category, 
-    type, // "expense" or "income"
+    category: categoryName, 
+    subcategory, 
+    type, 
     date: new Date().toISOString() 
   };
 
   expenses.push(expense);
   localStorage.setItem(EXPENSES_KEY, JSON.stringify(expenses));
-
   amountInput.value = "";
   renderExpenses();
 });
@@ -130,82 +170,4 @@ function getFilteredExpenses() {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(now.getDate() - 7);
     filtered = filtered.filter(exp => new Date(exp.date) >= oneWeekAgo);
-  }
-  if (filterTime.value === "month") {
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setMonth(now.getMonth() - 1);
-    filtered = filtered.filter(exp => new Date(exp.date) >= oneMonthAgo);
-  }
-  return filtered;
-}
-
-function renderExpenses() {
-  historyList.innerHTML = "";
-  const filteredExpenses = getFilteredExpenses();
-  if (filteredExpenses.length === 0) {
-    historyList.innerHTML = "<li>No transactions yet</li>";
-    updateDashboard(0, 0);
-    return;
-  }
-  let expenseTotal = 0;
-  let incomeTotal = 0;
-
-  filteredExpenses.slice().reverse().forEach(exp => {
-    if (exp.type === "expense") expenseTotal += exp.amount;
-    if (exp.type === "income") incomeTotal += exp.amount;
-
-    const li = document.createElement("li");
-    const sign = exp.type === "income" ? "+" : "-";
-    const cssClass = exp.type === "income" ? "income" : "expense";
-
-    li.innerHTML = `<span>${exp.category}</span>
-      <span class="${cssClass}">${sign} ${currencySymbol}${exp.amount.toFixed(2)}</span>`;
-    historyList.appendChild(li);
-  });
-
-  updateDashboard(expenseTotal, incomeTotal);
-}
-
-// ===== DASHBOARD =====
-function updateDashboard(expenseTotal, incomeTotal) {
-  const remaining = budgetLimit > 0 ? budgetLimit - expenseTotal : 0;
-  spentEl.textContent = `${currencySymbol}${expenseTotal.toFixed(2)}`;
-  remainingEl.textContent = budgetLimit > 0 ? `${currencySymbol}${remaining.toFixed(2)}` : `${currencySymbol}0.00`;
-  progressSpentEl.textContent = `${currencySymbol}${expenseTotal.toFixed(0)}`;
-  budgetLimitEl.textContent = budgetLimit > 0 ? `${currencySymbol}${budgetLimit}` : "Set budget";
-
-  const percent = budgetLimit > 0 ? Math.min((expenseTotal / budgetLimit) * 360, 360) : 0;
-  circle.style.background = `conic-gradient(#007aff ${percent}deg, rgba(255,255,255,0.2) ${percent}deg)`;
-}
-
-// ===== SETTINGS =====
-saveSettingsBtn.addEventListener("click", () => {
-  const newBudget = parseFloat(budgetInput.value);
-  const newCurrency = currencyInput.value || currencySymbol;
-  if (!isNaN(newBudget) && newBudget > 0) {
-    budgetLimit = newBudget;
-    localStorage.setItem(BUDGET_KEY, budgetLimit);
-  }
-  currencySymbol = newCurrency;
-  localStorage.setItem(CURRENCY_KEY, currencySymbol);
-  renderExpenses();
-  alert("Settings saved!");
-});
-
-resetDataBtn.addEventListener("click", () => {
-  if (confirm("Reset all data?")) {
-    expenses = [];
-    categories = ["🍔 Food","✈️ Travel","🛍️ Shopping","📌 Other"];
-    localStorage.clear();
-    budgetLimit = 0;
-    currencySymbol = "$";
-    renderCategories();
-    renderExpenses();
-  }
-});
-
-// ===== INIT =====
-renderCategories();
-renderExpenses();
-budgetInput.value = budgetLimit || "";
-currencyInput.value = currencySymbol;
+ 
