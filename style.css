@@ -1,39 +1,43 @@
-/* General */
+/* Background gradient */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #f2f3f7;
+  background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
   margin: 0;
-  padding-bottom: 70px;
+  padding-bottom: 80px;
   color: #111;
+  min-height: 100vh;
 }
-main { padding-top: 1rem; }
 
 /* Header */
 .app-header {
   text-align: center;
   padding: 1rem;
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   font-weight: 600;
-  background: #fff;
-  border-bottom: 1px solid #e5e5e5;
+  color: white;
+  background: transparent;
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
 /* Screens */
-.screen { display: none; }
+.screen { display: none; animation: fadeIn 0.3s ease; }
 .screen.active { display: block; }
 
-/* Cards */
-.card {
-  background: #fff;
+/* Glass effect cards */
+.card.glass {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 1.5rem;
   margin: 1rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
 }
+
+/* Subtitles */
 .subtitle {
-  color: #888;
+  color: #eee;
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
@@ -42,22 +46,50 @@ main { padding-top: 1rem; }
 .stats {
   display: flex;
   justify-content: space-between;
+  color: #fff;
 }
-.stats strong {
-  display: block;
-  font-size: 1.3rem;
-  color: #007aff;
-}
+.stats strong { font-size: 1.4rem; }
 
-/* History */
+/* Circle Progress */
+.circle-progress {
+  width: 140px;
+  height: 140px;
+  margin: 1.5rem auto;
+  border-radius: 50%;
+  background: conic-gradient(#007aff 0deg, rgba(255,255,255,0.2) 0deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.6s ease;
+}
+.circle-inner {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.circle-inner strong { font-size: 1.2rem; color: #007aff; }
+.circle-inner p { margin: 0; font-size: 0.8rem; color: #333; }
+
+/* History items */
 .history-list { list-style: none; padding: 0; margin: 0; }
 .history-list li {
   display: flex;
   justify-content: space-between;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #f0f0f0;
+  align-items: center;
+  margin: 0.5rem 0;
+  padding: 0.75rem 1rem;
+  background: rgba(255,255,255,0.7);
+  border-radius: 12px;
+  font-size: 0.95rem;
 }
-.history-list li:last-child { border: none; }
+.history-list li span:last-child { font-weight: 600; }
+.history-list li span:last-child.expense { color: #ff3b30; }
+.history-list li span:last-child.income { color: #34c759; }
 
 /* Filters */
 .filters {
@@ -67,48 +99,24 @@ main { padding-top: 1rem; }
 }
 .filters select {
   flex: 1;
-  padding: 0.5rem;
+  padding: 0.6rem;
   border-radius: 10px;
   border: 1px solid #ddd;
   font-size: 0.9rem;
 }
 
-/* Circle Progress */
-.circle-progress {
-  width: 120px;
-  height: 120px;
-  margin: 1.5rem auto;
-  border-radius: 50%;
-  background: conic-gradient(#007aff 0deg, #eee 0deg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.circle-inner {
-  background: #fff;
-  border-radius: 50%;
-  width: 90px;
-  height: 90px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.circle-inner strong { font-size: 1.2rem; }
-.circle-inner p { margin: 0; font-size: 0.8rem; color: #888; }
-
 /* Forms */
 form input, form select {
   width: 100%;
   margin-bottom: 1rem;
-  padding: 0.75rem;
+  padding: 0.8rem;
   border-radius: 12px;
   border: 1px solid #ddd;
   font-size: 1rem;
 }
 form button, #save-settings, #reset-data {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.8rem;
   border-radius: 12px;
   background: #007aff;
   border: none;
@@ -116,10 +124,13 @@ form button, #save-settings, #reset-data {
   font-size: 1rem;
   font-weight: 600;
   margin-top: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
+form button:hover, #save-settings:hover { background: #005bb5; }
 button.danger { background: #ff3b30; }
 
-/* Categories */
+/* Categories list */
 .categories-list {
   list-style: none;
   padding: 0;
@@ -130,9 +141,8 @@ button.danger { background: #ff3b30; }
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid rgba(255,255,255,0.3);
 }
-.categories-list li:last-child { border-bottom: none; }
 .categories-list button {
   background: #ff3b30;
   border: none;
@@ -143,20 +153,38 @@ button.danger { background: #ff3b30; }
   cursor: pointer;
 }
 
-/* Footer Nav */
+/* Bottom Nav */
 .app-footer {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  background: #fff;
-  border-top: 1px solid #ddd;
+  background: rgba(255,255,255,0.3);
+  backdrop-filter: blur(10px);
   display: flex;
   justify-content: space-around;
-  padding: 0.6rem 0;
+  padding: 0.7rem 0;
 }
 .app-footer a {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   text-decoration: none;
-  color: #333;
+  color: #444;
+  position: relative;
+  transition: color 0.2s ease;
+}
+.app-footer a.active { color: #007aff; }
+.app-footer a.active::after {
+  content: "•";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.2rem;
+  color: #007aff;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
