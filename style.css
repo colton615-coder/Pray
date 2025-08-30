@@ -142,3 +142,16 @@ button.danger {
   text-decoration: none;
   color: #333;
 }
+/* Filters */
+.filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.filters select {
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 0.9rem;
+}
