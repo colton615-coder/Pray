@@ -1,3 +1,4 @@
+console.log("✅ Script loaded!");
 // ===== KEYS =====
 const BUDGET_KEY = "budgetLimit";
 const CURRENCY_KEY = "currencySymbol";
